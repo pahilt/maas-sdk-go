@@ -131,7 +131,6 @@ func TestGetUserInfo(t *testing.T) {
 	testUI := UserInfo{
 		UserID: "test",
 		Email:  "test@example.net",
-		Name:   "John Doe",
 	}
 
 	body, _ := json.Marshal(testUI)

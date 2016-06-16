@@ -26,16 +26,14 @@ application needs to construct instance of `maas.Client`.
 ### Initialization
 To start using MAAS API, `maas.Client` can be initialized with the
 `maas.NewClient` function . This function accepts a single argument,
-`maas.Config`. In general it is needed to populate the ClientID, ClientSecret,
-RedirectURI and DiscoveryURI parameters.
+`maas.Config`. In general it is needed to populate the ClientID, ClientSecret and
+RedirectURI parameters.
 
 ```
 client, err := maas.NewClient(maas.Config{
         ClientID:     CLIENT_ID,
         ClientSecret: CLIENT_SECRET,
         RedirectURI:  REDIRECT_URL,
-        DiscoveryURI: DISCOVERY_URL,
-
     })
 ```
 
@@ -57,8 +55,8 @@ page responsible for login, by populating AUTH_URL (see below):
 ```
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
-<script src="/mpin/mpad.js" x-authurl="AUTH_URL" x-element="btmpin"></script>
-
+...
+<script src="http://demo.stg.miracl.net/mpin/mpad.js" data-authurl="{{ .AuthURL }}" data-element="btmpin"></script>
 ```
 
 If user is not authorized, use `client.GetAuthRequestURL(state)`

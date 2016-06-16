@@ -22,7 +22,6 @@ const (
 var (
 	clientID     = flag.String("client-id", "", "OIDC Client Id")
 	clientSecret = flag.String("client-secret", "", "OIDC Client Secret")
-	discovery    = flag.String("discovery", "", "OIDC Discovery URL")
 	redirectURL  = flag.String("redirect", "", "Redirect URL")
 	addr         = flag.String("addr", ":8002", "Listen address")
 	templatesDir = flag.String("templates-dir", "templates", "Template files location")
@@ -83,9 +82,6 @@ func main() {
 	if *clientSecret == "" {
 		log.Fatal("client-secret required")
 	}
-	if *discovery == "" {
-		log.Fatal("Discovery URL required")
-	}
 	if *redirectURL == "" {
 		log.Fatal("Redirect URL required")
 	}
@@ -94,7 +90,6 @@ func main() {
 		ClientID:     *clientID,
 		ClientSecret: *clientSecret,
 		RedirectURI:  *redirectURL,
-		DiscoveryURI: *discovery,
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -116,7 +111,7 @@ func main() {
 			ctx.AuthURL = authURL
 		}
 		if *debug {
-			claims, err := jwt.Claims()
+			claims, _ := jwt.Claims()
 			log.Printf("Access token: %v", accessToken)
 			log.Printf("JTW payload: %+v", claims)
 		}

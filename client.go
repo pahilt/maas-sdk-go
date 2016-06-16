@@ -16,6 +16,8 @@ import (
 
 const (
 	sleepPeriod = 3 * time.Second
+	// DiscoveryURI is the discovery URL of the Miracl OIDC server, without the `.well-known/openid-configuration`
+	DiscoveryURI = "https://api.stg.miracl.net"
 )
 
 // Config is configuration struct for initializing a Client object with NewClient.
@@ -23,7 +25,6 @@ type Config struct {
 	ClientID        string          // RP client ID at authorization server (`client_id` in OIDC 1.0). Required.
 	ClientSecret    string          // RP client secret at authorization server (`client_secret` in OIDC 1.0). Required.
 	RedirectURI     string          // URI for back redirection from authorization server to RP (`redirect_uri` in OIDC 1.0). Required.
-	DiscoveryURI    string          // Discovery base URI, according to OIDC 1.0, without the `.well-known/openid-configuration`. If not specified, a functional default will be used.
 	HTTPClient      *http.Client    // HTTP client to use for requests to authorization server. If left out, `http.DefaultClient` will be used
 	ProviderRetries int             // Number of retries to make while fetching provider configuration from discovery URI.
 	Clock           clockwork.Clock // A clock object. If left out, real clock will be used. Fake clock can be passed for testing.
@@ -90,7 +91,7 @@ func NewClient(mcfg Config) (mc Client, err error) {
 	var provider oidc.ProviderConfig
 	for tries := 0; true; {
 
-		provider, err = oidc.FetchProviderConfig(mcfg.HTTPClient, mcfg.DiscoveryURI)
+		provider, err = oidc.FetchProviderConfig(mcfg.HTTPClient, DiscoveryURI)
 		if err == nil {
 			break
 		}
@@ -117,7 +118,7 @@ func NewClient(mcfg Config) (mc Client, err error) {
 		return nil, err
 	}
 
-	oidc.SyncProviderConfig(mcfg.DiscoveryURI)
+	oidc.SyncProviderConfig(DiscoveryURI)
 
 	oauth, err := oidc.OAuthClient()
 	if err != nil {
