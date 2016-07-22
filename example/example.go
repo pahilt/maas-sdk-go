@@ -30,6 +30,13 @@ var (
 	mc maas.Client
 )
 
+// Below there is an exemplary implementation of server side session.
+// It is overly simpistic for the purposes of the example, as the main point
+// is the usage of the SDK.
+// Real applications could / should implemet session in more advanced manner
+// or use whatever is provided from the framework they use.
+
+// CheckSession verifies that the request provides a valid session.
 func checkSession(r *http.Request, sessions map[string]maas.UserInfo) (user maas.UserInfo, err error) {
 	c, err := r.Cookie("session")
 	if err != nil {
@@ -42,6 +49,7 @@ func checkSession(r *http.Request, sessions map[string]maas.UserInfo) (user maas
 	return user, err
 }
 
+// CreateSession creates a new valid session
 func createSession(w http.ResponseWriter, user maas.UserInfo, sessions map[string]maas.UserInfo) {
 	sessionID := time.Now().Format(time.RFC850)
 	sessions[sessionID] = user
@@ -50,6 +58,7 @@ func createSession(w http.ResponseWriter, user maas.UserInfo, sessions map[strin
 	http.SetCookie(w, &cookie)
 }
 
+// DeleteSession removes (invalidates) session
 func deleteSession(r *http.Request, w http.ResponseWriter, sessions map[string]maas.UserInfo) {
 	c, _ := r.Cookie("session")
 	delete(sessions, c.Value)
@@ -58,11 +67,13 @@ func deleteSession(r *http.Request, w http.ResponseWriter, sessions map[string]m
 	http.SetCookie(w, c)
 }
 
+// Flash is a one time message to be displayed
 type flash struct {
 	Category string
 	Message  string
 }
 
+// Application context in request
 type context struct {
 	Messages   []flash
 	Retry      bool
@@ -73,6 +84,7 @@ type context struct {
 }
 
 func main() {
+	// Parse command line options
 	log.SetFlags(log.LstdFlags | log.Lshortfile | log.LUTC)
 	flag.Parse()
 
@@ -102,8 +114,11 @@ func main() {
 		ctx.Messages = make([]flash, 10)
 
 		code := r.URL.Query().Get("code")
+		// CExchange authorization code for access token
 		accessToken, jwt, err := mc.ValidateAuth(code)
 		if err != nil {
+			// if authorization code is invalid, offer the user to login
+			// mpad needs authURL
 			authURL, e := mc.GetAuthRequestURL("test-state")
 			if e != nil {
 				ctx.Messages = append(ctx.Messages, flash{Category: "error", Message: e.Error()})
@@ -116,14 +131,19 @@ func main() {
 			log.Printf("JTW payload: %+v", claims)
 		}
 
+		// Retrieve use info from oidc server
 		user, err := mc.GetUserUnfo(accessToken)
 		if err != nil {
 			ctx.Messages = append(ctx.Messages, flash{Category: "error", Message: err.Error()})
 		} else {
+			// If user info is successfully retrieved, create session and
+			// redirect to `protected` page
 			createSession(w, user, sessions)
 			http.Redirect(w, r, "/", 302)
 			return
 		}
+
+		// Else show the login page, along with any error messages
 		if t, err := template.New("index.tmpl").ParseFiles(filepath.Join(*templatesDir, "index.tmpl")); err != nil {
 			log.Fatalf("Failed to parse template: %+v", err)
 		} else {
@@ -131,6 +151,7 @@ func main() {
 		}
 	})
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
+		// On logout delete session and redirect to index
 		deleteSession(r, w, sessions)
 		http.Redirect(w, r, "/", 302)
 	})
@@ -140,12 +161,15 @@ func main() {
 		ctx.Messages = make([]flash, 0)
 
 		if user, err := checkSession(r, sessions); err != nil {
+			// If user is not logged, populate authURL for mpad
+			// so the user can authenticate
 			authURL, e := mc.GetAuthRequestURL("test-state")
 			if e != nil {
 				ctx.Messages = append(ctx.Messages, flash{Category: "error", Message: e.Error()})
 			}
 			ctx.AuthURL = authURL
 		} else {
+			// Else display info for logged user (this is `protected` page)
 			ctx.Authorized = true
 			ctx.UserID = user.UserID
 			ctx.Email = user.Email
