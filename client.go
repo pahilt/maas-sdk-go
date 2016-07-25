@@ -17,7 +17,7 @@ import (
 const (
 	sleepPeriod = 3 * time.Second
 	// DiscoveryURI is the discovery URL of the Miracl OIDC server, without the `.well-known/openid-configuration`
-	DiscoveryURI = "https://api.stg.miracl.net"
+	DiscoveryURI = "https://api.mpin.io"
 )
 
 // Config is configuration struct for initializing a Client object with NewClient.
