@@ -120,13 +120,11 @@ func main() {
 		// CExchange authorization code for access token
 		accessToken, jwt, err := mc.ValidateAuth(code)
 		if err != nil {
-			// if authorization code is invalid, offer the user to login
-			// mpad needs authURL
-			authURL, e := mc.GetAuthRequestURL("test-state")
-			if e != nil {
-				ctx.Messages = append(ctx.Messages, flash{Category: "error", Message: e.Error()})
-			}
-			ctx.AuthURL = authURL
+			// if authorization code is invalid, redirect to index
+			log.Printf("Invalid authentication code: %v\n", code)
+			log.Println(err)
+			http.Redirect(w, r, "/", 302)
+			return
 		}
 		if *debug {
 			claims, _ := jwt.Claims()
@@ -138,6 +136,7 @@ func main() {
 		user, err := mc.GetUserUnfo(accessToken)
 		if err != nil {
 			ctx.Messages = append(ctx.Messages, flash{Category: "error", Message: err.Error()})
+			log.Println(err)
 		} else {
 			// If user info is successfully retrieved, create session and
 			// redirect to `protected` page
