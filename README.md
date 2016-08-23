@@ -2,6 +2,7 @@
 
 [![Master Build Status](https://secure.travis-ci.org/miracl/maas-sdk-go.png?branch=master)](https://travis-ci.org/miracl/maas-sdk-go?branch=master)
 [![Master Coverage Status](https://coveralls.io/repos/miracl/maas-sdk-go/badge.svg?branch=master&service=github)](https://coveralls.io/github/miracl/maas-sdk-go?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/miracl/maas-sdk-go)](https://goreportcard.com/report/github.com/miracl/maas-sdk-go)
 
 * **category**:    SDK
 * **copyright**:   2016 MIRACL UK LTD
