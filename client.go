@@ -15,7 +15,8 @@ import (
 )
 
 const (
-	sleepPeriod  = 3 * time.Second
+	sleepPeriod = 3 * time.Second
+	// DiscoveryURI is the discovery URL of the Miracl OIDC server
 	DiscoveryURI = "https://api.mpin.io"
 )
 
