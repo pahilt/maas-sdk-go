@@ -72,8 +72,10 @@ page responsible for login, by populating AUTH_URL (see below):
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
 ...
-<script src="http://demo.stg.miracl.net/mpin/mpad.js" data-authurl="{{ .AuthURL }}" data-element="btmpin"></script>
+<script src="<<Insert correct mpad url here>>" data-authurl="{{ .AuthURL }}" data-element="btmpin"></script>
 ```
+
+Please refer to your distributor-specific documentation to find the correct url for the mpad.js script src
 
 If user is not authorized, use `client.GetAuthRequestURL(state)`
 to get authorization request URL and set client internal state. Returned URL
