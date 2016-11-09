@@ -35,7 +35,7 @@ To run tests with `go test` in the root folder.
 
 ## Details and usage
 
-All interaction with API happens through `mass.Client` interface. Each
+All interaction with API happens through `maas.Client` interface. Each
 application needs to construct instance of `maas.Client`.
 
 
