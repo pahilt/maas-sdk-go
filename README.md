@@ -90,7 +90,7 @@ and `nil` error if user denied authorization and token if authorization succeede
 The replying party application should take care for additional checks for state at the OIDC
 handler - the ValidateAuth method only check OIDC token validity.
 
-User info can be retrieved using the client.GetUserUnfo(accessToken). This method returns
+User info can be retrieved using the client.GetUserInfo(accessToken). This method returns
 `maas.UserInfo` structure and error.
 
 
