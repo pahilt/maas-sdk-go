@@ -133,7 +133,7 @@ func main() {
 		}
 
 		// Retrieve use info from oidc server
-		user, err := mc.GetUserUnfo(accessToken)
+		user, err := mc.GetUserInfo(accessToken)
 		if err != nil {
 			ctx.Messages = append(ctx.Messages, flash{Category: "error", Message: err.Error()})
 			log.Println(err)
