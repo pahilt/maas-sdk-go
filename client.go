@@ -44,7 +44,7 @@ type client struct {
 type Client interface {
 	GetAuthRequestURL(state string) (u string, err error)
 	ValidateAuth(code string) (string, jose.JWT, error)
-	GetUserUnfo(accessToken string) (ui UserInfo, err error)
+	GetUserInfo(accessToken string) (ui UserInfo, err error)
 }
 
 // UserInfo holds user information retrieved from UserInfo endpoint.
@@ -180,9 +180,9 @@ func validateAuth(code string, oidc oidcClient, oac oauthClient) (string, jose.J
 
 }
 
-// GetUserUnfo retrieves `UserInfo` from authorization server.
+// GetUserInfo retrieves `UserInfo` from authorization server.
 // Argument `accessToken` is the access token to be sent to authorization server.
-func (mc *client) GetUserUnfo(accessToken string) (ui UserInfo, err error) {
+func (mc *client) GetUserInfo(accessToken string) (ui UserInfo, err error) {
 	return getUserInfo(mc.provider.UserInfoEndpoint.String(), accessToken, mc.config.HTTPClient)
 }
 
